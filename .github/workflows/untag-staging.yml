@@ -1,0 +1,29 @@
+name: Remove staging release
+on:
+  pull_request:
+    types: [closed, unlabeled]
+jobs:
+  tag:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-ci') }}
+    name: Delete release tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      # Retrieve the branch name when there is a `staging` label
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF}" >> $GITHUB_OUTPUT
+        id: extract_branch
+      # Delete the `staging-BRANCH_NAME` tag if the PR is closed or unlabeled
+      - name: "Untag staging"
+        uses: eKee-io/git-tag-action@fix-not-a-git-dir
+        if: ${{ contains(github.event.action, 'closed') ||
+          (contains(github.event.action, 'unlabeled')
+          && !contains(github.event.pull_request.labels.*.name, 'staging')) }}
+        env:
+          TAG: staging-${{ steps.extract_branch.outputs.branch }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          DELETE: true
