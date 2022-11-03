@@ -19,6 +19,8 @@ func (h *EchoHandler) ServeHTTP(w http.ResponseWriter, rq *http.Request) {
 		}
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+
+	w.Write([]byte("This is an update"))
 }
 
 func main() {
