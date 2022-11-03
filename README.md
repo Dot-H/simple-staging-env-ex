@@ -14,3 +14,19 @@ In order to run the example locally you will need to install:
 
 - [minikube](https://kubernetes.io/fr/docs/setup/learning-environment/minikube/)
 - [helm](https://helm.sh/docs/intro/quickstart/)
+
+```bash
+cd k8s/staging-env
+minikube start
+minikube addons enable ingress
+
+sleep 2 # Gives time to ingress to get ready
+
+# Deploy normal environment
+helm install echo-server .
+
+# Deploy staging environment
+helm install staging-echo-server . --values values-staging.yaml
+```
+
+The example uses the staging image built from [PR #3](https://github.com/Dot-H/simple-staging-env-ex/pull/3)

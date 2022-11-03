@@ -1,0 +1,27 @@
+# Default values for staging-env.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+staging:
+  tag:
+
+image:
+  repository: ghcr.io/dot-h/simple-staging-env-ex
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "main"
+
+nameOverride: ""
+fullnameOverride: "echo-server"
+
+service:
+  type: NodePort
+  port: 8080
+
+ingress:
+  enabled: true
+  className: ""
+  annotations: {}
+  tls: []
