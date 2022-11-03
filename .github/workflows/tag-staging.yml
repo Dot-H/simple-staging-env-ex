@@ -26,9 +26,3 @@ jobs:
           TAG: staging-${{ steps.extract_branch.outputs.branch }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: ${{ steps.extract_branch.outputs.branch }}
-      - uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          prerelease: true
-          tag: staging-${{ steps.extract_branch.outputs.branch }}
-          token: ${{ secrets.GITHUB_TOKEN }}
