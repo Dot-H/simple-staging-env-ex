@@ -1,11 +1,11 @@
-name: Release staging version
+name: Remove staging release
 on:
   pull_request:
-    types: [opened, synchronize, reopened, labeled]
+    types: [closed, unlabeled]
 jobs:
   tag:
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'no-ci') }}
-    name: Release staging
+    name: Delete release tag
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -16,19 +16,14 @@ jobs:
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF}" >> $GITHUB_OUTPUT
         id: extract_branch
-      # Tag the current commit with `staging-BRANCH_NAME` when there is a `staging` label
-      - name: "Tag staging"
+      # Delete the `staging-BRANCH_NAME` tag if the PR is closed or unlabeled
+      - name: "Untag staging"
         uses: eKee-io/git-tag-action@fix-not-a-git-dir
-        if:
-          ${{ !contains(fromJson('["unlabeled", "closed"]'), github.event.action)
-          && contains(github.event.pull_request.labels.*.name, 'staging') }}
+        if: ${{ contains(github.event.action, 'closed') ||
+          (contains(github.event.action, 'unlabeled')
+          && !contains(github.event.pull_request.labels.*.name, 'staging')) }}
         env:
           TAG: staging-${{ steps.extract_branch.outputs.branch }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: ${{ steps.extract_branch.outputs.branch }}
-      - uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          prerelease: true
-          tag: staging-${{ steps.extract_branch.outputs.branch }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          DELETE: true

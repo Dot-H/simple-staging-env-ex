@@ -1,7 +1,6 @@
 apiVersion: v2
 name: staging-env
-description: A Helm chart to deploy an illustrative environment with the support
-of a staging part
+description: A Helm chart to deploy an illustrative environment with the support of a staging part
 
 # A chart can be either an 'application' or a 'library' chart.
 #

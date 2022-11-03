@@ -1,0 +1,23 @@
+# This is the staging values files.
+#
+# By default, all the services are disabled. It is the job of the CI
+# to enable the deployments to put in staging mode and tell which tags to use.
+#
+# The value will prepare the deployments to make them use special services when
+# being activated. By default, a staging deployment will try to communicate with
+# the production ones. But if the dependencies are activated, they will use those.
+
+# If touching this name, you will need to patch the "Ingress" deployment in order
+# to patch the backend serviceName for the "staging.*" hosts
+fullnameOverride: "staging-echo-server"
+
+image:
+  pullPolicy: Always
+
+# Values permitting to know which staging tag should be used and which deployments
+# to setup for this tag
+staging:
+  tag: staging-update-echo
+  # Controll which services should use the staging tag
+  enabled:
+    echoServer: true

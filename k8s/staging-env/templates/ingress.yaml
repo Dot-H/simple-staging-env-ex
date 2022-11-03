@@ -1,3 +1,4 @@
+{{- if not .Values.staging.tag }} # Not in staging mode
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "staging-env.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
@@ -6,13 +7,7 @@
   {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
   {{- end }}
 {{- end }}
-{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
-{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -37,25 +32,25 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
+    - host: "echo.alx-b.com"
       http:
         paths:
-          {{- range .paths }}
-          - path: {{ .path }}
-            {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
-            pathType: {{ .pathType }}
-            {{- end }}
+          - path: /
+            pathType: Prefix
             backend:
-              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
                 name: {{ $fullName }}
                 port:
                   number: {{ $svcPort }}
-              {{- else }}
-              serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
-              {{- end }}
-          {{- end }}
-    {{- end }}
+    - host: "echo.staging.alx-b.com"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: staging-{{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+{{- end }}
 {{- end }}

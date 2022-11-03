@@ -23,6 +23,19 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{/* Tag for the echo-server docker image */}}
+{{- define "staging-env.echoServerTag" }}
+{{- if $.Values.staging.tag }}
+    {{- if $.Values.staging.enabled.echoServer }}
+        {{- $.Values.staging.tag }}
+    {{- else }}
+        {{- $.Values.image.tag }}
+    {{- end }}
+{{- else }}
+    {{- $.Values.image.tag }}
+{{- end }}
+{{- end }}
+
 {{/*
 Create chart name and version as used by the chart label.
 */}}
