@@ -9,9 +9,11 @@
 
 # If touching this name, you will need to patch the "Ingress" deployment in order
 # to patch the backend serviceName for the "staging.*" hosts
-fullnameOverride: "staging-echo-server"
+nameOverride: "staging-echo-server"
 
 image:
+  # Always pull in order to retrieve the latest version of the staging
+  # element
   pullPolicy: Always
 
 # Values permitting to know which staging tag should be used and which deployments
