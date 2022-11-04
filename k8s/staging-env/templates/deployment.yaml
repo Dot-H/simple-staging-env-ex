@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "staging-env.fullname" . }}
+  name: {{ include "staging-env.name" . }}
   labels:
     {{- include "staging-env.labels" . | nindent 4 }}
 spec:
@@ -22,3 +22,9 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+          env:
+          - name: ECHO_SERVER_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "staging-env.strictName" . }}-secret
+                key: username

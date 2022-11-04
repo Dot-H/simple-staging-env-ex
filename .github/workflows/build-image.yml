@@ -1,7 +1,5 @@
 name: Build docker image
 on:
-  release:
-    types: [published, prereleased]
   workflow_run:
     workflows: ["Release staging version"]
     types:
